@@ -48,20 +48,12 @@ fun menuClientes() {
 
 fun mostrarClientes() {
     println();
-    println("**** Listado de coches:")
+    println("**** Listado de clientes:")
     coleccion.find().forEach { doc ->
-//        val id_coche = doc.getInteger("id_coche")
-//        val modelo = doc.getString("modelo")
-//        val marca = doc.getString("marca")
-//        val consumo = doc.get("consumo").toString().toDouble()
-//        val hp = doc.getInteger("hp")
 
         println(
-            "[${doc.getInteger("id_coche")}] " +
-                    "modelo: ${doc.getString("modelo")} " +
-                    "marca: ${doc.getString("marca")} " +
-                    "consumo: ${doc.get("consumo").toString().toDouble()} " +
-                    "hp: ${doc.getInteger("hp")} "
+            "[${doc.getInteger("id_cliente")}] " +
+                    "nombre: ${doc.getString("nombre")}"
         )
     }
 }
@@ -71,28 +63,20 @@ fun insertarCliente() {
 
     val coleccion = coleccion
 
-    print("ID del coche: ")
-    val id_coche = isInt()
-    print("Nombre modelo: ")
-    val modelo = isString()
-    print("Nombre marca: ")
-    val marca = isString()
-    print("Consumo: ")
-    val consumo = isDouble()
-    print("Potencia: ")
-    val hp = isInt()
+    print("ID del cliente: ")
+    val id_cliente = isInt()
+    print("Nombre cliente: ")
+    val nombre = isString()
 
 
 
-    val doc = Document("id_coche", id_coche)
-        .append("modelo", modelo)
-        .append("marca", marca)
-        .append("consumo", consumo)
-        .append("hp", hp)
+
+    val doc = Document("id_cliente", id_cliente)
+        .append("nombre", nombre)
 
 
     coleccion.insertOne(doc)
-    println("Coche insertado con ID: ${doc.getObjectId("_id")}")
+    println("Cliente insertado con ID: ${doc.getObjectId("_id")}")
 }
 
 fun actualizarCliente() {
@@ -100,48 +84,36 @@ fun actualizarCliente() {
 
     val coleccion = coleccion
 
-    print("ID del coche a modificar: ")
-    val id_coche = isInt()
+    print("ID del cliente a modificar: ")
+    val id_cliente = isInt()
 
 
-    val coche = coleccion.find(Filters.eq("id_coche", id_coche)).firstOrNull()
-    if (coche == null) {
-        println("No se encontró ningun coche con id_coche = \"$id_coche\".")
+    val cliente = coleccion.find(Filters.eq("id_cliente", id_cliente)).firstOrNull()
+    if (cliente == null) {
+        println("No se encontró ningun cliente con id_cliente = \"$id_cliente\".")
     }
     else {
         println(
-            "Coche encontrado( " +
-                    "modelo: ${coche.getString("modelo")} " +
-                    "marca: ${coche.getString("marca")} " +
-                    "consumo: ${coche.get("consumo").toString().toDouble()} " +
-                    "hp: ${coche.getInteger("hp")} )"
+            "cliente encontrado( nombre: ${cliente.getString("nombre")} )"
         )
 
-        print("Nombre modelo a modificar: ")
-        val modelo = isString()
-        print("Nombre marca a modificar: ")
-        val marca = isString()
-        print("Consumo a modificar: ")
-        val consumo = isDouble()
-        print("Potencia a modificar: ")
-        val hp = isInt()
+        print("Nombre cliente a modificar: ")
+        val nombre = isString()
+
 
         // Actualizar el documento
         val result = coleccion.updateMany(
-            Filters.eq("id_coche", id_coche),
+            Filters.eq("id_cliente", id_cliente),
             Document("\$set",
                 Document()
-                    .append("modelo", modelo)
-                    .append("marca", marca)
-                    .append("consumo", consumo)
-                    .append("hp", hp)
+                    .append("nombre", nombre)
             ),
 
             )
 
 
         if (result.modifiedCount > 0)
-            println("Coches actualizados correctamente (${result.modifiedCount} documento modificado).")
+            println("clientes actualizados correctamente (${result.modifiedCount} documento modificado).")
         else
             println("No se modificó ningún documento (help).")
     }
@@ -153,14 +125,14 @@ fun eliminarCliente() {
 
     val coleccion = coleccion
 
-    print("ID del coche a eliminar: ")
-    val id_coche = isInt()
+    print("ID del cliente a eliminar: ")
+    val id_cliente = isInt()
 
-    val result = coleccion.deleteOne(Filters.eq("id_coche", id_coche))
+    val result = coleccion.deleteOne(Filters.eq("id_cliente", id_cliente))
     if (result.deletedCount > 0)
-        println("Coche eliminado correctamente.")
+        println("cliente eliminado correctamente.")
     else
-        println("No se encontró ninguna coche con ese ID.")
+        println("No se encontró ninguna cliente con ese ID.")
 
 }
 
