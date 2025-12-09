@@ -1,53 +1,33 @@
-import com.mongodb.client.model.Projections
 import com.mongodb.client.MongoCollection
 import java.util.InputMismatchException
-import com.mongodb.client.model.Filters
 import org.bson.json.JsonWriterSettings
 import java.io.File
 import com.mongodb.client.MongoClients
 import org.bson.Document
 import org.json.JSONArray
-import java.util.Scanner
 
 import de.bwaldvogel.mongo.MongoServer
 import de.bwaldvogel.mongo.backend.memory.MemoryBackend
 
 import com.mongodb.client.MongoClient
-import com.mongodb.client.model.Aggregates
 import kotlin.collections.contains
-import kotlin.collections.firstOrNull
-import kotlin.collections.forEach
 import kotlin.io.printWriter
 import kotlin.io.readText
 import kotlin.io.use
 import kotlin.ranges.until
 import kotlin.text.isBlank
-import kotlin.text.toDouble
 import kotlin.text.toDoubleOrNull
 import kotlin.text.toIntOrNull
-import kotlin.toString
-
-
-//const val NOM_SRV = "mongodb://guille:1234guille@100.25.144.241:27017"
-//const val NOM_BD = "cars"
-//const val NOM_COLECCION = "coches"
-//
-//data class Coche(
-//    val id_coche: Int? = null,
-//    val modelo: String,
-//    val marca: String,
-//    val consumo: Double,
-//    val hp: Int
-//)
 
 
 lateinit var servidor: MongoServer
 lateinit var cliente: MongoClient
 lateinit var uri: String
-lateinit var coleccionCoches: MongoCollection<Document>
 
-const val NOM_BD = "cars"
-const val NOM_COLECCION = "coches"
+lateinit var coleccion: MongoCollection<Document>
+
+const val NOM_BD = "bd"
+const val NOM_COLECCION = "coleccion"
 
 fun conectarBD() {
     servidor = MongoServer(MemoryBackend())
@@ -55,7 +35,7 @@ fun conectarBD() {
     uri = "mongodb://${address.hostName}:${address.port}"
 
     cliente = MongoClients.create(uri)
-    coleccionCoches = cliente.getDatabase(NOM_BD).getCollection(NOM_COLECCION)
+    coleccion = cliente.getDatabase(NOM_BD).getCollection(NOM_COLECCION)
 
     println("Servidor MongoDB en memoria iniciado en $uri")
 }
@@ -68,11 +48,7 @@ fun desconectarBD() {
 
 fun main() {
     conectarBD()
-    importarBD("src/main/resources/cars.json", coleccionCoches)
-
     menu()
-
-    exportarBD(coleccionCoches,"src/main/resources/cars2.json")
     desconectarBD()
 }
 
@@ -89,11 +65,19 @@ fun menu() {
             val select: Int = isInt()
             when (select) {
                 1 -> {
+                    importarBD("src/main/resources/cars.json", coleccion)
                     menuCoches()
+                    exportarBD(coleccion,"src/main/resources/cars.json")
                 }
                 2 -> {
+                    importarBD("src/main/resources/facturas.json", coleccion)
+                    menuFacturas()
+                    exportarBD(coleccion,"src/main/resources/facturas2.json")
                 }
                 3 -> {
+                    importarBD("src/main/resources/clientes.json", coleccion)
+                    menuClientes()
+                    exportarBD(coleccion,"src/main/resources/clientes.json")
                 }
                 4 -> {
                     itera = false

@@ -3,42 +3,38 @@ import com.mongodb.client.model.Projections
 import org.bson.Document
 import java.util.InputMismatchException
 
-fun menuCoches() {
+fun menuClientes() {
     var itera = true
     do {
         println()
         println("   Selecciona una opcion: ")
-        println("1. Mostrar Coches")
-        println("2. Insertar Coche")
-        println("3. Eliminar Coche")
-        println("4. Actualizar Coche")
-        println("5. Varias operaciones")
-        println("6. Salir")
+        println("1. Mostrar Clientes")
+        println("2. Insertar Cliente")
+        println("3. Eliminar Cliente")
+        println("4. Actualizar Cliente")
+        println("5. Salir")
         try {
             val select: Int = isInt()
             when (select) {
                 1 -> {
-                    mostrarCoches()
+                    mostrarClientes()
                 }
                 2 -> {
-                    insertarCoche()
+                    insertarCliente()
                 }
                 3 -> {
-                    eliminarCoche()
+                    eliminarCliente()
                 }
                 4 -> {
-                    actualizarCoche()
+                    actualizarCliente()
 
                 }
                 5 -> {
-                    variasOperaciones()
-                }
-                6 -> {
                     itera = false
                 }
 
                 else -> {
-                    println("Opcion no valida. Por favor, selecciona una opcion del 1 al 6.")
+                    println("Opcion no valida. Por favor, selecciona una opcion del 1 al 5.")
                 }
             }
 
@@ -50,7 +46,7 @@ fun menuCoches() {
     } while (itera)
 }
 
-fun mostrarCoches() {
+fun mostrarClientes() {
     println();
     println("**** Listado de coches:")
     coleccion.find().forEach { doc ->
@@ -70,7 +66,7 @@ fun mostrarCoches() {
     }
 }
 
-fun insertarCoche() {
+fun insertarCliente() {
     //conectar con la BD
 
     val coleccion = coleccion
@@ -99,7 +95,7 @@ fun insertarCoche() {
     println("Coche insertado con ID: ${doc.getObjectId("_id")}")
 }
 
-fun actualizarCoche() {
+fun actualizarCliente() {
     //conectar con la BD
 
     val coleccion = coleccion
@@ -152,7 +148,7 @@ fun actualizarCoche() {
 
 }
 
-fun eliminarCoche() {
+fun eliminarCliente() {
     //conectar con la BD
 
     val coleccion = coleccion
@@ -168,29 +164,4 @@ fun eliminarCoche() {
 
 }
 
-fun variasOperaciones() {
-    val col = coleccion
 
-    println("*****Coches que que tienen más de 200 de potencia")
-    // 1) Filtro: altura > 100
-    col.find(Filters.gt("hp", 200)).forEach { println(it.toJson()) }
-
-    println("*****Marca y nombre común de todos los coches")
-    // 2) Proyección: solo nombre_comun
-    col.find().projection(Projections.include("marca","id_coche")).forEach { println(it.toJson()) }
-
-    println("*****Potencia media de todos los coches")
-    // 3) Agregación: media de altura
-    val pipeline = listOf(
-        Document(
-            "\$group", Document("_id", null)
-                .append("potenciaMedia", Document("\$avg", "\$hp"))
-//            .append("\$sort", Document("potenciaMedia", -1))
-        )
-    )
-    val aggCursor = col.aggregate(pipeline).iterator()
-    aggCursor.use {
-        while (it.hasNext()) println(it.next().toJson())
-    }
-
-}
