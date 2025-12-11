@@ -49,7 +49,7 @@ fun menuClientes() {
 fun mostrarClientes() {
     println();
     println("**** Listado de clientes:")
-    coleccion.find().forEach { doc ->
+    coleccionClientes.find().forEach { doc ->
 
         println(
             "[${doc.getInteger("id_cliente")}] " +
@@ -61,7 +61,7 @@ fun mostrarClientes() {
 fun insertarCliente() {
     //conectar con la BD
 
-    val coleccion = coleccion
+    val coleccionClientes = coleccionClientes
 
     print("ID del cliente: ")
     val id_cliente = isInt()
@@ -75,20 +75,20 @@ fun insertarCliente() {
         .append("nombre", nombre)
 
 
-    coleccion.insertOne(doc)
+    coleccionClientes.insertOne(doc)
     println("Cliente insertado con ID: ${doc.getObjectId("_id")}")
 }
 
 fun actualizarCliente() {
     //conectar con la BD
 
-    val coleccion = coleccion
+    val coleccionClientes = coleccionClientes
 
     print("ID del cliente a modificar: ")
     val id_cliente = isInt()
 
 
-    val cliente = coleccion.find(Filters.eq("id_cliente", id_cliente)).firstOrNull()
+    val cliente = coleccionClientes.find(Filters.eq("id_cliente", id_cliente)).firstOrNull()
     if (cliente == null) {
         println("No se encontró ningun cliente con id_cliente = \"$id_cliente\".")
     }
@@ -102,7 +102,7 @@ fun actualizarCliente() {
 
 
         // Actualizar el documento
-        val result = coleccion.updateMany(
+        val result = coleccionClientes.updateMany(
             Filters.eq("id_cliente", id_cliente),
             Document("\$set",
                 Document()
@@ -123,12 +123,12 @@ fun actualizarCliente() {
 fun eliminarCliente() {
     //conectar con la BD
 
-    val coleccion = coleccion
+    val coleccionClientes = coleccionClientes
 
     print("ID del cliente a eliminar: ")
     val id_cliente = isInt()
 
-    val result = coleccion.deleteOne(Filters.eq("id_cliente", id_cliente))
+    val result = coleccionClientes.deleteOne(Filters.eq("id_cliente", id_cliente))
     if (result.deletedCount > 0)
         println("cliente eliminado correctamente.")
     else

@@ -1,56 +1,56 @@
 [
-  {
-    "_id": {
-      "$oid": "693adf114417074b63adcacf"
-    },
-    "fecha": "2025-11-28",
-    "id_factura": 1,
-    "precio": 60000,
-    "id_cliente": 1,
-    "cantidad": 2,
-    "id_coche": 3
+{
+  "_id": {
+    "$oid": "693aede4b6f6ce0ebd56c758"
   },
-  {
-    "_id": {
-      "$oid": "693adf114417074b63adcad0"
-    },
-    "fecha": "2025-12-02",
-    "id_factura": 2,
-    "precio": 32000,
-    "id_cliente": 2,
-    "cantidad": 1,
-    "id_coche": 1
+  "fecha": "2025-11-28",
+  "id_factura": 1,
+  "precio": 60000,
+  "id_cliente": 1,
+  "cantidad": 2,
+  "id_coche": 3
+},
+{
+  "_id": {
+    "$oid": "693aede4b6f6ce0ebd56c759"
   },
-  {
-    "_id": {
-      "$oid": "693adf114417074b63adcad1"
-    },
-    "fecha": "2025-12-05",
-    "id_factura": 3,
-    "precio": 45000,
-    "id_cliente": 3,
-    "cantidad": 1,
-    "id_coche": 4
+  "fecha": "2025-12-02",
+  "id_factura": 2,
+  "precio": 32000,
+  "id_cliente": 2,
+  "cantidad": 1,
+  "id_coche": 1
+},
+{
+  "_id": {
+    "$oid": "693aede4b6f6ce0ebd56c75a"
   },
-  {
-    "_id": {
-      "$oid": "693adf114417074b63adcad2"
-    },
-    "fecha": "2025-12-08",
-    "id_factura": 4,
-    "precio": 28000,
-    "id_cliente": 4,
-    "cantidad": 3,
-    "id_coche": 2
+  "fecha": "2025-12-05",
+  "id_factura": 3,
+  "precio": 45000,
+  "id_cliente": 3,
+  "cantidad": 1,
+  "id_coche": 4
+},
+{
+  "_id": {
+    "$oid": "693aede4b6f6ce0ebd56c75b"
   },
-  {
-    "_id": {
-      "$oid": "693adf114417074b63adcad3"
-    },
-    "fecha": "2025-12-10",
-    "id_factura": 5,
-    "precio": 52000,
-    "id_cliente": 5,
-    "cantidad": 1,
-    "id_coche": 5
-  }]
+  "fecha": "2025-12-08",
+  "id_factura": 4,
+  "precio": 28000,
+  "id_cliente": 4,
+  "cantidad": 3,
+  "id_coche": 2
+},
+{
+  "_id": {
+    "$oid": "693aede4b6f6ce0ebd56c75c"
+  },
+  "fecha": "2025-12-10",
+  "id_factura": 5,
+  "precio": 52000,
+  "id_cliente": 5,
+  "cantidad": 1,
+  "id_coche": 5
+}]

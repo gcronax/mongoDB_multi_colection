@@ -24,10 +24,16 @@ lateinit var servidor: MongoServer
 lateinit var cliente: MongoClient
 lateinit var uri: String
 
-lateinit var coleccion: MongoCollection<Document>
+lateinit var coleccionClientes: MongoCollection<Document>
+lateinit var coleccionCoches: MongoCollection<Document>
+lateinit var coleccionFacturas: MongoCollection<Document>
 
-const val NOM_BD = "bd"
-const val NOM_COLECCION = "coleccion"
+
+const val NOM_BD = "concesionario"
+const val NOM_COLECCION_COCHES = "cars"
+const val NOM_COLECCION_CLIENTES = "clientes"
+const val NOM_COLECCION_FACTURAS = "facturas"
+
 
 fun conectarBD() {
     servidor = MongoServer(MemoryBackend())
@@ -35,7 +41,9 @@ fun conectarBD() {
     uri = "mongodb://${address.hostName}:${address.port}"
 
     cliente = MongoClients.create(uri)
-    coleccion = cliente.getDatabase(NOM_BD).getCollection(NOM_COLECCION)
+    coleccionClientes = cliente.getDatabase(NOM_BD).getCollection(NOM_COLECCION_CLIENTES)
+    coleccionCoches = cliente.getDatabase(NOM_BD).getCollection(NOM_COLECCION_COCHES)
+    coleccionFacturas = cliente.getDatabase(NOM_BD).getCollection(NOM_COLECCION_FACTURAS)
 
     println("Servidor MongoDB en memoria iniciado en $uri")
 }
@@ -48,7 +56,17 @@ fun desconectarBD() {
 
 fun main() {
     conectarBD()
+
+    importarBD("src/main/resources/cars.json", coleccionCoches)
+    importarBD("src/main/resources/clientes.json", coleccionClientes)
+    importarBD("src/main/resources/facturas.json", coleccionFacturas)
+
     menu()
+
+    exportarBD(coleccionCoches,"src/main/resources/cars.json")
+    exportarBD(coleccionClientes,"src/main/resources/clientes.json")
+    exportarBD(coleccionFacturas,"src/main/resources/facturas2.json")
+
     desconectarBD()
 }
 
@@ -65,19 +83,13 @@ fun menu() {
             val select: Int = isInt()
             when (select) {
                 1 -> {
-                    importarBD("src/main/resources/cars.json", coleccion)
                     menuCoches()
-                    exportarBD(coleccion,"src/main/resources/cars.json")
                 }
                 2 -> {
-                    importarBD("src/main/resources/facturas.json", coleccion)
                     menuFacturas()
-                    exportarBD(coleccion,"src/main/resources/facturas2.json")
                 }
                 3 -> {
-                    importarBD("src/main/resources/clientes.json", coleccion)
                     menuClientes()
-                    exportarBD(coleccion,"src/main/resources/clientes.json")
                 }
                 4 -> {
                     itera = false

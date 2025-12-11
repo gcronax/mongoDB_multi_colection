@@ -1,7 +1,7 @@
 [
 {
   "_id": {
-    "$oid": "693adf51f528b912f95147e9"
+    "$oid": "693af44e2a95ad4fd21fd237"
   },
   "fecha": "2025-11-28",
   "id_factura": 1,
@@ -12,7 +12,7 @@
 },
 {
   "_id": {
-    "$oid": "693adf51f528b912f95147ea"
+    "$oid": "693af44e2a95ad4fd21fd238"
   },
   "fecha": "2025-12-02",
   "id_factura": 2,
@@ -23,7 +23,7 @@
 },
 {
   "_id": {
-    "$oid": "693adf51f528b912f95147eb"
+    "$oid": "693af44e2a95ad4fd21fd239"
   },
   "fecha": "2025-12-05",
   "id_factura": 3,
@@ -34,7 +34,7 @@
 },
 {
   "_id": {
-    "$oid": "693adf51f528b912f95147ec"
+    "$oid": "693af44e2a95ad4fd21fd23a"
   },
   "fecha": "2025-12-08",
   "id_factura": 4,
@@ -45,7 +45,7 @@
 },
 {
   "_id": {
-    "$oid": "693adf51f528b912f95147ed"
+    "$oid": "693af44e2a95ad4fd21fd23b"
   },
   "fecha": "2025-12-10",
   "id_factura": 5,

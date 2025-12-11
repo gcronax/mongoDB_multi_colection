@@ -12,7 +12,7 @@ fun menuFacturas() {
         println("2. Insertar Factura")
         println("3. Eliminar Factura")
         println("4. Actualizar Factura")
-        println("5. Varias operaciones")
+        println("5. Mostrar Factura")
         println("6. Salir")
         try {
             val select: Int = isInt()
@@ -31,7 +31,7 @@ fun menuFacturas() {
 
                 }
                 5 -> {
-
+                    mostrarFactura()
                 }
                 6 -> {
                     itera = false
@@ -53,7 +53,7 @@ fun menuFacturas() {
 fun mostrarFacturas() {
     println();
     println("**** Listado de facturas:")
-    coleccion.find().forEach { doc ->
+    coleccionFacturas.find().forEach { doc ->
 //        val id_factura = doc.getInteger("id_factura")
 //        val modelo = doc.getString("modelo")
 //        val marca = doc.getString("marca")
@@ -74,7 +74,7 @@ fun mostrarFacturas() {
 fun insertarFactura() {
     //conectar con la BD
 
-    val coleccion = coleccion
+    val coleccionFacturas = coleccionFacturas
 
     print("ID de la factura: ")
     val id_factura = isInt()
@@ -99,20 +99,20 @@ fun insertarFactura() {
         .append("cantidad", cantidad)
 
 
-    coleccion.insertOne(doc)
+    coleccionFacturas.insertOne(doc)
     println("factura insertado con ID: ${doc.getObjectId("_id")}")
 }
 
 fun actualizarFactura() {
     //conectar con la BD
 
-    val coleccion = coleccion
+    val coleccionFacturas = coleccionFacturas
 
     print("ID del factura a modificar: ")
     val id_factura = isInt()
 
 
-    val doc = coleccion.find(Filters.eq("id_factura", id_factura)).firstOrNull()
+    val doc = coleccionFacturas.find(Filters.eq("id_factura", id_factura)).firstOrNull()
     if (doc == null) {
         println("No se encontró ningun factura con id_factura = \"$id_factura\".")
     }
@@ -140,7 +140,7 @@ fun actualizarFactura() {
         val cantidad = isInt()
 
         // Actualizar el documento
-        val result = coleccion.updateMany(
+        val result = coleccionFacturas.updateMany(
             Filters.eq("id_factura", id_factura),
             Document("\$set",
                 Document()
@@ -165,12 +165,12 @@ fun actualizarFactura() {
 fun eliminarFactura() {
     //conectar con la BD
 
-    val coleccion = coleccion
+    val coleccionFacturas = coleccionFacturas
 
     print("ID del factura a eliminar: ")
     val id_factura = isInt()
 
-    val result = coleccion.deleteOne(Filters.eq("id_factura", id_factura))
+    val result = coleccionFacturas.deleteOne(Filters.eq("id_factura", id_factura))
     if (result.deletedCount > 0)
         println("factura eliminado correctamente.")
     else
@@ -178,3 +178,79 @@ fun eliminarFactura() {
 
 }
 
+fun mostrarFactura() {
+
+    val coleccionFacturas = coleccionFacturas
+
+    print("ID de la factura: ")
+    val id_factura = isInt()
+
+    val facturaDoc = coleccionFacturas
+        .find(Document("id_factura", id_factura))
+        .first()
+
+    if (facturaDoc == null) {
+        println("No existe ninguna factura con ID $id_factura")
+        return
+    }
+
+    val fecha = facturaDoc["fecha"] as String
+
+    val pipeline = listOf(
+        Document("\$match", Document("id_factura", id_factura)),
+        Document("\$lookup", Document()
+            .append("from", "cars")
+            .append("localField", "id_coche")
+            .append("foreignField", "id_coche")
+            .append("as", "coche")
+        ),
+        Document("\$unwind", "\$coche"),
+        Document("\$project", Document()
+            .append("marca", "\$coche.marca")
+            .append("cantidad", 1)
+            .append("precio", 1)
+            .append("subtotal", Document("\$multiply", listOf("\$precio", "\$cantidad")))
+        )
+    )
+
+    // Ejecutar la agregación para obtener la lista de líneas
+    val lineas = coleccionFacturas.aggregate(pipeline).toList()
+
+    if (lineas.isEmpty()) {
+        println("No se encontraron líneas para la factura $id_factura")
+        return
+    }
+
+    // Encabezado de la factura
+    println("===============================================================")
+    println("Factura ID: $id_factura")
+    println("Fecha: $fecha")
+    println("---------------------------------------------------------------")
+    println(String.format("%-15s %-10s %-10s %-12s", "Coche", "Cantidad", "Precio", "Subtotal"))
+    println("---------------------------------------------------------------")
+
+    var totalFactura = 0.0
+
+    // Iterar sobre las líneas de la factura
+    lineas.forEach { linea ->
+        val nombre = linea["marca"] as String
+        val cantidad = linea["cantidad"] as Int
+        val precio = linea["precio"] as Int
+        val subtotal = (linea["subtotal"] as Number).toDouble()
+
+        totalFactura += subtotal
+
+        println(String.format("%-15s %-10d %-10s %-12s",
+            nombre, cantidad, precio, subtotal
+        ))
+    }
+
+    var totalIVA =totalFactura*0.21
+
+    // Mostrar pie de factura con totales
+    println("---------------------------------------------------------------")
+    println(String.format("%-15s %-10s %-10s %-12s", "", "TOTAL:", totalFactura, ""))
+    println(String.format("%-15s %-10s %-10s %-12s", "", "IVA 21%:", totalIVA, ""))
+    println(String.format("%-15s %-10s %-10s %-12s", "", "TOTAL CON IVA:", totalFactura + totalIVA, ""))
+    println("===============================================================")
+}

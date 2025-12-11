@@ -53,7 +53,7 @@ fun menuCoches() {
 fun mostrarCoches() {
     println();
     println("**** Listado de coches:")
-    coleccion.find().forEach { doc ->
+    coleccionCoches.find().forEach { doc ->
 //        val id_coche = doc.getInteger("id_coche")
 //        val modelo = doc.getString("modelo")
 //        val marca = doc.getString("marca")
@@ -73,7 +73,7 @@ fun mostrarCoches() {
 fun insertarCoche() {
     //conectar con la BD
 
-    val coleccion = coleccion
+    val coleccionCoches = coleccionCoches
 
     print("ID del coche: ")
     val id_coche = isInt()
@@ -95,20 +95,20 @@ fun insertarCoche() {
         .append("hp", hp)
 
 
-    coleccion.insertOne(doc)
+    coleccionCoches.insertOne(doc)
     println("Coche insertado con ID: ${doc.getObjectId("_id")}")
 }
 
 fun actualizarCoche() {
     //conectar con la BD
 
-    val coleccion = coleccion
+    val coleccionCoches = coleccionCoches
 
     print("ID del coche a modificar: ")
     val id_coche = isInt()
 
 
-    val coche = coleccion.find(Filters.eq("id_coche", id_coche)).firstOrNull()
+    val coche = coleccionCoches.find(Filters.eq("id_coche", id_coche)).firstOrNull()
     if (coche == null) {
         println("No se encontró ningun coche con id_coche = \"$id_coche\".")
     }
@@ -131,7 +131,7 @@ fun actualizarCoche() {
         val hp = isInt()
 
         // Actualizar el documento
-        val result = coleccion.updateMany(
+        val result = coleccionCoches.updateMany(
             Filters.eq("id_coche", id_coche),
             Document("\$set",
                 Document()
@@ -155,12 +155,12 @@ fun actualizarCoche() {
 fun eliminarCoche() {
     //conectar con la BD
 
-    val coleccion = coleccion
+    val coleccionCoches = coleccionCoches
 
     print("ID del coche a eliminar: ")
     val id_coche = isInt()
 
-    val result = coleccion.deleteOne(Filters.eq("id_coche", id_coche))
+    val result = coleccionCoches.deleteOne(Filters.eq("id_coche", id_coche))
     if (result.deletedCount > 0)
         println("Coche eliminado correctamente.")
     else
@@ -169,7 +169,7 @@ fun eliminarCoche() {
 }
 
 fun variasOperaciones() {
-    val col = coleccion
+    val col = coleccionCoches
 
     println("*****Coches que que tienen más de 200 de potencia")
     // 1) Filtro: altura > 100
