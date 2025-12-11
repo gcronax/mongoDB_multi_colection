@@ -52,20 +52,21 @@ fun menuFacturas() {
 
 fun mostrarFacturas() {
     println();
-    println("**** Listado de coches:")
+    println("**** Listado de facturas:")
     coleccion.find().forEach { doc ->
-//        val id_coche = doc.getInteger("id_coche")
+//        val id_factura = doc.getInteger("id_factura")
 //        val modelo = doc.getString("modelo")
 //        val marca = doc.getString("marca")
 //        val consumo = doc.get("consumo").toString().toDouble()
 //        val hp = doc.getInteger("hp")
 
         println(
-            "[${doc.getInteger("id_coche")}] " +
-                    "modelo: ${doc.getString("modelo")} " +
-                    "marca: ${doc.getString("marca")} " +
-                    "consumo: ${doc.get("consumo").toString().toDouble()} " +
-                    "hp: ${doc.getInteger("hp")} "
+            "[${doc.getInteger("id_factura")}] " +
+                    "fecha: ${doc.getString("fecha")} " +
+                    "id_coche: ${doc.getInteger("id_coche")} " +
+                    "id_cliente: ${doc.getInteger("id_cliente")} " +
+                    "precio: ${doc.getInteger("precio")} " +
+                    "cantidad: ${doc.getInteger("cantidad")} "
         )
     }
 }
@@ -75,28 +76,31 @@ fun insertarFactura() {
 
     val coleccion = coleccion
 
+    print("ID de la factura: ")
+    val id_factura = isInt()
+    print("Fecha: ")
+    val fecha = isString()
     print("ID del coche: ")
     val id_coche = isInt()
-    print("Nombre modelo: ")
-    val modelo = isString()
-    print("Nombre marca: ")
-    val marca = isString()
-    print("Consumo: ")
-    val consumo = isDouble()
-    print("Potencia: ")
-    val hp = isInt()
+    print("ID del cliente: ")
+    val id_cliente = isInt()
+    print("precio: ")
+    val precio = isInt()
+    print("cantidad: ")
+    val cantidad = isInt()
 
 
 
-    val doc = Document("id_coche", id_coche)
-        .append("modelo", modelo)
-        .append("marca", marca)
-        .append("consumo", consumo)
-        .append("hp", hp)
+    val doc = Document("id_factura", id_factura)
+        .append("fecha", fecha)
+        .append("id_coche", id_coche)
+        .append("id_cliente", id_cliente)
+        .append("precio", precio)
+        .append("cantidad", cantidad)
 
 
     coleccion.insertOne(doc)
-    println("Coche insertado con ID: ${doc.getObjectId("_id")}")
+    println("factura insertado con ID: ${doc.getObjectId("_id")}")
 }
 
 fun actualizarFactura() {
@@ -104,48 +108,54 @@ fun actualizarFactura() {
 
     val coleccion = coleccion
 
-    print("ID del coche a modificar: ")
-    val id_coche = isInt()
+    print("ID del factura a modificar: ")
+    val id_factura = isInt()
 
 
-    val coche = coleccion.find(Filters.eq("id_coche", id_coche)).firstOrNull()
-    if (coche == null) {
-        println("No se encontró ningun coche con id_coche = \"$id_coche\".")
+    val doc = coleccion.find(Filters.eq("id_factura", id_factura)).firstOrNull()
+    if (doc == null) {
+        println("No se encontró ningun factura con id_factura = \"$id_factura\".")
     }
     else {
         println(
-            "Coche encontrado( " +
-                    "modelo: ${coche.getString("modelo")} " +
-                    "marca: ${coche.getString("marca")} " +
-                    "consumo: ${coche.get("consumo").toString().toDouble()} " +
-                    "hp: ${coche.getInteger("hp")} )"
+            "[${doc.getInteger("id_factura")}] " +
+                    "fecha: ${doc.getString("fecha")} " +
+                    "id_coche: ${doc.getInteger("id_coche")} " +
+                    "id_cliente: ${doc.getInteger("id_cliente")} " +
+                    "precio: ${doc.getInteger("precio")} " +
+                    "cantidad: ${doc.getInteger("cantidad")} "
         )
 
-        print("Nombre modelo a modificar: ")
-        val modelo = isString()
-        print("Nombre marca a modificar: ")
-        val marca = isString()
-        print("Consumo a modificar: ")
-        val consumo = isDouble()
-        print("Potencia a modificar: ")
-        val hp = isInt()
+        print("ID de la factura a modificar: ")
+        val id_factura = isInt()
+        print("Fecha a modificar: ")
+        val fecha = isString()
+        print("ID del coche a modificar: ")
+        val id_coche = isInt()
+        print("ID del cliente a modificar: ")
+        val id_cliente = isInt()
+        print("precio a modificar: ")
+        val precio = isInt()
+        print("cantidad a modificar: ")
+        val cantidad = isInt()
 
         // Actualizar el documento
         val result = coleccion.updateMany(
-            Filters.eq("id_coche", id_coche),
+            Filters.eq("id_factura", id_factura),
             Document("\$set",
                 Document()
-                    .append("modelo", modelo)
-                    .append("marca", marca)
-                    .append("consumo", consumo)
-                    .append("hp", hp)
+                    .append("fecha", fecha)
+                    .append("id_coche", id_coche)
+                    .append("id_cliente", id_cliente)
+                    .append("precio", precio)
+                    .append("cantidad", cantidad)
             ),
 
             )
 
 
         if (result.modifiedCount > 0)
-            println("Coches actualizados correctamente (${result.modifiedCount} documento modificado).")
+            println("facturas actualizados correctamente (${result.modifiedCount} documento modificado).")
         else
             println("No se modificó ningún documento (help).")
     }
@@ -157,14 +167,14 @@ fun eliminarFactura() {
 
     val coleccion = coleccion
 
-    print("ID del coche a eliminar: ")
-    val id_coche = isInt()
+    print("ID del factura a eliminar: ")
+    val id_factura = isInt()
 
-    val result = coleccion.deleteOne(Filters.eq("id_coche", id_coche))
+    val result = coleccion.deleteOne(Filters.eq("id_factura", id_factura))
     if (result.deletedCount > 0)
-        println("Coche eliminado correctamente.")
+        println("factura eliminado correctamente.")
     else
-        println("No se encontró ninguna coche con ese ID.")
+        println("No se encontró ninguna factura con ese ID.")
 
 }
 
