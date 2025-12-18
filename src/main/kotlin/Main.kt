@@ -65,7 +65,7 @@ fun main() {
 
     exportarBD(coleccionCoches,"src/main/resources/cars.json")
     exportarBD(coleccionClientes,"src/main/resources/clientes.json")
-    exportarBD(coleccionFacturas,"src/main/resources/facturas2.json")
+    exportarBD(coleccionFacturas,"src/main/resources/facturas.json")
 
     desconectarBD()
 }
@@ -78,7 +78,9 @@ fun menu() {
         println("1. Menu Coches")
         println("2. Menu Facturas")
         println("3. Menu Clientes")
-        println("4. Salir")
+        println("4. Mostrar factura")
+
+        println("7. Salir")
         try {
             val select: Int = isInt()
             when (select) {
@@ -92,6 +94,15 @@ fun menu() {
                     menuClientes()
                 }
                 4 -> {
+                    mostrarFactura()
+                }
+                5 -> {
+                    itera = false
+                }
+                6 -> {
+                    itera = false
+                }
+                7 -> {
                     itera = false
                 }
 

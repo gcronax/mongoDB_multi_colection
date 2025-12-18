@@ -1,42 +1,42 @@
 [
 {
   "_id": {
-    "$oid": "693af44e2a95ad4fd21fd231"
+    "$oid": "694450de373d435c495e8040"
   },
   "id_cliente": 1,
   "nombre": "Pol"
 },
 {
   "_id": {
-    "$oid": "693af44e2a95ad4fd21fd232"
+    "$oid": "694450de373d435c495e8041"
   },
   "id_cliente": 2,
   "nombre": "Ade"
 },
 {
   "_id": {
-    "$oid": "693af44e2a95ad4fd21fd233"
+    "$oid": "694450de373d435c495e8042"
   },
   "id_cliente": 3,
   "nombre": "Lucía"
 },
 {
   "_id": {
-    "$oid": "693af44e2a95ad4fd21fd234"
+    "$oid": "694450de373d435c495e8043"
   },
   "id_cliente": 4,
   "nombre": "Marcos"
 },
 {
   "_id": {
-    "$oid": "693af44e2a95ad4fd21fd235"
+    "$oid": "694450de373d435c495e8044"
   },
   "id_cliente": 5,
   "nombre": "Elena"
 },
 {
   "_id": {
-    "$oid": "693af44e2a95ad4fd21fd236"
+    "$oid": "694450de373d435c495e8045"
   },
   "id_cliente": 6,
   "nombre": "Jordi"

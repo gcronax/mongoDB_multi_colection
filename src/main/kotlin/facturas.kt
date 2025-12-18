@@ -12,8 +12,7 @@ fun menuFacturas() {
         println("2. Insertar Factura")
         println("3. Eliminar Factura")
         println("4. Actualizar Factura")
-        println("5. Mostrar Factura")
-        println("6. Salir")
+        println("5. Salir")
         try {
             val select: Int = isInt()
             when (select) {
@@ -31,14 +30,11 @@ fun menuFacturas() {
 
                 }
                 5 -> {
-                    mostrarFactura()
-                }
-                6 -> {
                     itera = false
                 }
 
                 else -> {
-                    println("Opcion no valida. Por favor, selecciona una opcion del 1 al 6.")
+                    println("Opcion no valida. Por favor, selecciona una opcion del 1 al 5.")
                 }
             }
 
@@ -179,6 +175,94 @@ fun eliminarFactura() {
 }
 
 fun mostrarFactura() {
+
+
+    print("ID de la factura: ")
+    val id_factura = isInt()
+
+    val facturaDoc = coleccionFacturas
+        .find(Document("id_factura", id_factura))
+        .first()
+
+    if (facturaDoc == null) {
+        println("No existe ninguna factura con ID $id_factura")
+        return
+    }
+    val fecha = facturaDoc["fecha"] as String
+
+    val pipeline = listOf(
+
+        Document("\$match", Document("id_factura", id_factura)),
+
+        Document("\$lookup", Document()
+            .append("from", "clientes")
+            .append("localField", "id_cliente")
+            .append("foreignField", "id_cliente")
+            .append("as", "cliente")
+        ),
+        Document("\$unwind", "\$cliente"),
+
+        Document("\$lookup", Document()
+            .append("from", "cars")
+            .append("localField", "id_coche")
+            .append("foreignField", "id_coche")
+            .append("as", "coche")
+        ),
+        Document("\$unwind", "\$coche"),
+
+        Document("\$project", Document()
+            .append("nombre", "\$cliente.nombre")
+            .append("marca", "\$coche.marca")
+            .append("cantidad", 1)
+            .append("precio", 1)
+            .append("subtotal", Document("\$multiply", listOf("\$precio", "\$cantidad")))
+        )
+    )
+
+    // Ejecutar la agregación para obtener la lista de líneas
+    val lineas = coleccionFacturas.aggregate(pipeline).toList()
+
+    if (lineas.isEmpty()) {
+        println("No se encontraron líneas para la factura $id_factura")
+        return
+    }
+
+    // Encabezado de la factura
+    println("===============================================================")
+    println("Factura ID: $id_factura")
+    println("Fecha: $fecha")
+    println("---------------------------------------------------------------")
+    println(String.format("%-15s %-10d %-10d %-10s %-12s", "Cliente", "Coche", "Cantidad", "Precio", "Subtotal"))
+    println("---------------------------------------------------------------")
+
+    var totalFactura = 0.0
+
+    // Iterar sobre las líneas de la factura
+    lineas.forEach { linea ->
+        val nombre = linea["nombre"] as String
+        val marca = linea["marca"] as String
+        val cantidad = linea["cantidad"] as Int
+        val precio = linea["precio"] as Int
+        val subtotal = (linea["subtotal"] as Number).toDouble()
+
+        totalFactura += subtotal
+
+        println(String.format("%-15s %-10d %-10d %-10s %-12s",
+            nombre, marca, cantidad, precio, subtotal
+        ))
+    }
+
+    var totalIVA =totalFactura*0.21
+
+    // Mostrar pie de factura con totales
+    println("---------------------------------------------------------------")
+    println(String.format("%-15s %-10d %-10d %-10s %-12s", "", "TOTAL:", totalFactura, ""))
+    println(String.format("%-15s %-10d %-10d %-10s %-12s", "", "IVA 21%:", totalIVA, ""))
+    println(String.format("%-15s %-10d %-10d %-10s %-12s", "", "TOTAL CON IVA:", totalFactura + totalIVA, ""))
+    println("===============================================================")
+}
+
+fun mostrarNombreCliente() {
 
     val coleccionFacturas = coleccionFacturas
 
