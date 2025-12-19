@@ -79,6 +79,7 @@ fun menu() {
         println("2. Menu Facturas")
         println("3. Menu Clientes")
         println("4. Mostrar factura")
+        println("5. Mostrar coche con mayor precio en la factura")
 
         println("7. Salir")
         try {
@@ -97,8 +98,7 @@ fun menu() {
                     mostrarFactura()
                 }
                 5 -> {
-                    itera = false
-                }
+                    cocheConPrecioMayor()                }
                 6 -> {
                     itera = false
                 }

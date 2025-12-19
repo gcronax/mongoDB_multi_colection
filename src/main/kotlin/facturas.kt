@@ -1,3 +1,4 @@
+import coleccionFacturas
 import com.mongodb.client.model.Filters
 import com.mongodb.client.model.Projections
 import org.bson.Document
@@ -213,6 +214,7 @@ fun mostrarFactura() {
         Document("\$project", Document()
             .append("nombre", "\$cliente.nombre")
             .append("marca", "\$coche.marca")
+            .append("modelo", "\$coche.modelo")
             .append("cantidad", 1)
             .append("precio", 1)
             .append("subtotal", Document("\$multiply", listOf("\$precio", "\$cantidad")))
@@ -228,12 +230,12 @@ fun mostrarFactura() {
     }
 
     // Encabezado de la factura
-    println("===============================================================")
+    println("======================================================================")
     println("Factura ID: $id_factura")
     println("Fecha: $fecha")
-    println("---------------------------------------------------------------")
-    println(String.format("%-15s %-10d %-10d %-10s %-12s", "Cliente", "Coche", "Cantidad", "Precio", "Subtotal"))
-    println("---------------------------------------------------------------")
+    println("---------------------------------------------------------------------")
+    println(String.format("%-15s %-10s %-10s %-10s %-10s %-12s", "Cliente", "Coche", "Modelo", "Cantidad", "Precio", "Subtotal"))
+    println("---------------------------------------------------------------------")
 
     var totalFactura = 0.0
 
@@ -241,47 +243,33 @@ fun mostrarFactura() {
     lineas.forEach { linea ->
         val nombre = linea["nombre"] as String
         val marca = linea["marca"] as String
+        val modelo = linea["modelo"] as String
         val cantidad = linea["cantidad"] as Int
         val precio = linea["precio"] as Int
         val subtotal = (linea["subtotal"] as Number).toDouble()
 
         totalFactura += subtotal
 
-        println(String.format("%-15s %-10d %-10d %-10s %-12s",
-            nombre, marca, cantidad, precio, subtotal
+        println(String.format("%-15s %-10s %-10s %-10d %-10s %-12s",
+            nombre, marca, modelo, cantidad, precio, subtotal
         ))
     }
 
     var totalIVA =totalFactura*0.21
 
     // Mostrar pie de factura con totales
-    println("---------------------------------------------------------------")
-    println(String.format("%-15s %-10d %-10d %-10s %-12s", "", "TOTAL:", totalFactura, ""))
-    println(String.format("%-15s %-10d %-10d %-10s %-12s", "", "IVA 21%:", totalIVA, ""))
-    println(String.format("%-15s %-10d %-10d %-10s %-12s", "", "TOTAL CON IVA:", totalFactura + totalIVA, ""))
-    println("===============================================================")
+    println("---------------------------------------------------------------------")
+    println("TOTAL:           $totalFactura")
+    println("IVA 21%:         $totalIVA")
+    println("TOTAL CON IVA:   ${totalFactura + totalIVA}")
+    println("======================================================================")
 }
 
-fun mostrarNombreCliente() {
+fun cocheConPrecioMayor() {
 
     val coleccionFacturas = coleccionFacturas
 
-    print("ID de la factura: ")
-    val id_factura = isInt()
-
-    val facturaDoc = coleccionFacturas
-        .find(Document("id_factura", id_factura))
-        .first()
-
-    if (facturaDoc == null) {
-        println("No existe ninguna factura con ID $id_factura")
-        return
-    }
-
-    val fecha = facturaDoc["fecha"] as String
-
     val pipeline = listOf(
-        Document("\$match", Document("id_factura", id_factura)),
         Document("\$lookup", Document()
             .append("from", "cars")
             .append("localField", "id_coche")
@@ -291,50 +279,78 @@ fun mostrarNombreCliente() {
         Document("\$unwind", "\$coche"),
         Document("\$project", Document()
             .append("marca", "\$coche.marca")
+            .append("modelo", "\$coche.modelo")
             .append("cantidad", 1)
             .append("precio", 1)
-            .append("subtotal", Document("\$multiply", listOf("\$precio", "\$cantidad")))
-        )
+        ),
+        Document("\$sort", Document("precio", -1)),
+        Document("\$limit", 1)
     )
 
-    // Ejecutar la agregación para obtener la lista de líneas
-    val lineas = coleccionFacturas.aggregate(pipeline).toList()
+    val resultado = coleccionFacturas.aggregate(pipeline).first()
 
-    if (lineas.isEmpty()) {
-        println("No se encontraron líneas para la factura $id_factura")
+    if (resultado == null) {
+        println("No hay facturas")
         return
     }
 
-    // Encabezado de la factura
-    println("===============================================================")
-    println("Factura ID: $id_factura")
-    println("Fecha: $fecha")
-    println("---------------------------------------------------------------")
-    println(String.format("%-15s %-10s %-10s %-12s", "Coche", "Cantidad", "Precio", "Subtotal"))
-    println("---------------------------------------------------------------")
+    val marca = resultado["marca"] as String
+    val modelo = resultado["modelo"] as String
+    val precio = resultado["precio"] as Int
+    val cantidad = resultado["cantidad"] as Int
 
-    var totalFactura = 0.0
+    println("===================================")
+    println("Coche con mayor precio")
+    println("-----------------------------------")
+    println("Marca: $marca")
+    println("Modelo: $modelo")
+    println("Precio: $precio")
+    println("Cantidad: $cantidad")
+    println("===================================")
 
-    // Iterar sobre las líneas de la factura
-    lineas.forEach { linea ->
-        val nombre = linea["marca"] as String
-        val cantidad = linea["cantidad"] as Int
-        val precio = linea["precio"] as Int
-        val subtotal = (linea["subtotal"] as Number).toDouble()
+}
 
-        totalFactura += subtotal
+fun preciosdetodosloscoches() {
 
-        println(String.format("%-15s %-10d %-10s %-12s",
-            nombre, cantidad, precio, subtotal
-        ))
+    val coleccionFacturas = coleccionFacturas
+
+    val pipeline = listOf(
+        Document("\$lookup", Document()
+            .append("from", "cars")
+            .append("localField", "id_coche")
+            .append("foreignField", "id_coche")
+            .append("as", "coche")
+        ),
+        Document("\$unwind", "\$coche"),
+        Document("\$project", Document()
+            .append("marca", "\$coche.marca")
+            .append("modelo", "\$coche.modelo")
+            .append("cantidad", 1)
+            .append("precio", 1)
+        ),
+        Document("\$sort", Document("precio", -1)),
+        Document("\$limit", 1)
+    )
+
+    val resultado = coleccionFacturas.aggregate(pipeline).first()
+
+    if (resultado == null) {
+        println("No hay facturas")
+        return
     }
 
-    var totalIVA =totalFactura*0.21
+    val marca = resultado["marca"] as String
+    val modelo = resultado["modelo"] as String
+    val precio = resultado["precio"] as Int
+    val cantidad = resultado["cantidad"] as Int
 
-    // Mostrar pie de factura con totales
-    println("---------------------------------------------------------------")
-    println(String.format("%-15s %-10s %-10s %-12s", "", "TOTAL:", totalFactura, ""))
-    println(String.format("%-15s %-10s %-10s %-12s", "", "IVA 21%:", totalIVA, ""))
-    println(String.format("%-15s %-10s %-10s %-12s", "", "TOTAL CON IVA:", totalFactura + totalIVA, ""))
-    println("===============================================================")
+    println("===================================")
+    println("Coche con mayor precio")
+    println("-----------------------------------")
+    println("Marca: $marca")
+    println("Modelo: $modelo")
+    println("Precio: $precio")
+    println("Cantidad: $cantidad")
+    println("===================================")
+
 }
