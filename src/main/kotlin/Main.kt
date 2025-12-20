@@ -80,7 +80,7 @@ fun menu() {
         println("3. Menu Clientes")
         println("4. Mostrar factura")
         println("5. Mostrar coche con mayor precio en la factura")
-
+        println("6. Mostrar clientes y coches comprados")
         println("7. Salir")
         try {
             val select: Int = isInt()
@@ -100,7 +100,7 @@ fun menu() {
                 5 -> {
                     cocheConPrecioMayor()                }
                 6 -> {
-                    itera = false
+                    mostrarClientesYCoches()
                 }
                 7 -> {
                     itera = false

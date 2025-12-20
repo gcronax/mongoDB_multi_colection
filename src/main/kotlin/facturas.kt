@@ -297,7 +297,6 @@ fun cocheConPrecioMayor() {
     val marca = resultado["marca"] as String
     val modelo = resultado["modelo"] as String
     val precio = resultado["precio"] as Int
-    val cantidad = resultado["cantidad"] as Int
 
     println("===================================")
     println("Coche con mayor precio")
@@ -305,16 +304,21 @@ fun cocheConPrecioMayor() {
     println("Marca: $marca")
     println("Modelo: $modelo")
     println("Precio: $precio")
-    println("Cantidad: $cantidad")
     println("===================================")
 
 }
 
-fun preciosdetodosloscoches() {
-
-    val coleccionFacturas = coleccionFacturas
-
+fun mostrarClientesYCoches() {
     val pipeline = listOf(
+
+        Document("\$lookup", Document()
+            .append("from", "clientes")
+            .append("localField", "id_cliente")
+            .append("foreignField", "id_cliente")
+            .append("as", "cliente")
+        ),
+        Document("\$unwind", "\$cliente"),
+
         Document("\$lookup", Document()
             .append("from", "cars")
             .append("localField", "id_coche")
@@ -322,35 +326,32 @@ fun preciosdetodosloscoches() {
             .append("as", "coche")
         ),
         Document("\$unwind", "\$coche"),
+
         Document("\$project", Document()
+            .append("nombre", "\$cliente.nombre")
             .append("marca", "\$coche.marca")
             .append("modelo", "\$coche.modelo")
-            .append("cantidad", 1)
-            .append("precio", 1)
-        ),
-        Document("\$sort", Document("precio", -1)),
-        Document("\$limit", 1)
+        )
     )
 
-    val resultado = coleccionFacturas.aggregate(pipeline).first()
+    val resultados = coleccionFacturas.aggregate(pipeline).toList()
 
-    if (resultado == null) {
-        println("No hay facturas")
+    if (resultados.isEmpty()) {
+        println("No se encontraron compras de clientes.")
         return
     }
 
-    val marca = resultado["marca"] as String
-    val modelo = resultado["modelo"] as String
-    val precio = resultado["precio"] as Int
-    val cantidad = resultado["cantidad"] as Int
+    println("==========================================")
+    println(String.format("%-20s %-15s %-15s", "Cliente", "Marca", "Modelo"))
+    println("------------------------------------------")
 
-    println("===================================")
-    println("Coche con mayor precio")
-    println("-----------------------------------")
-    println("Marca: $marca")
-    println("Modelo: $modelo")
-    println("Precio: $precio")
-    println("Cantidad: $cantidad")
-    println("===================================")
+    resultados.forEach { r ->
+        val nombre = r["nombre"] as String
+        val marca = r["marca"] as String
+        val modelo = r["modelo"] as String
 
+        println(String.format("%-20s %-15s %-15s", nombre, marca, modelo))
+    }
+
+    println("==========================================")
 }
