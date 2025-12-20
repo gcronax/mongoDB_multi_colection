@@ -7,17 +7,7 @@ Permite gestionar **coches, clientes y facturas**, importar y exportar datos en 
 
 La base de datos se crea en memoria al iniciar el programa y se destruye al finalizar, garantizando que los datos se carguen y guarden desde archivos JSON.
 
----
 
-## 🛠️ Tecnologías utilizadas
-
-* **Kotlin**
-* **MongoDB en memoria** (`de.bwaldvogel.mongo`)
-* **MongoDB Java Driver**
-* **JSON** (`org.json`)
-* **Gradle / IntelliJ / Android Studio**
-
----
 
 ## 📂 Estructura del proyecto
 
@@ -25,7 +15,10 @@ La base de datos se crea en memoria al iniciar el programa y se destruye al fina
 src/
  └── main/
      ├── kotlin/
-     │   └── Main.kt
+     │   ├── Main.kt
+     │   ├── coches.kt
+     │   ├── facturas.kt     
+     │   └── clientes.kt
      └── resources/
          ├── cars.json
          ├── clientes.json
