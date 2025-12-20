@@ -1,7 +1,3 @@
-Claro 👍 Aquí tienes un **README completo y claro** para tu programa. Puedes copiarlo tal cual en un archivo llamado **`README.md`** en la raíz del proyecto.
-
----
-
 # 📦 Proyecto Concesionario – Kotlin + MongoDB en Memoria
 
 ## 📌 Descripción
