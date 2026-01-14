@@ -151,6 +151,30 @@ fun isString(): String{
 }
 
 
+fun checkID(coleccion: MongoCollection<Document>, campo: String):Int{
+
+    while (true){
+        val entrada= readln().toIntOrNull()
+        if (entrada==null){
+            println("Dame un número valido")
+        }else{
+            var encontrado=false
+            coleccion.find().forEach { doc ->
+                if (doc.getInteger(campo)==entrada){
+                    encontrado=true
+                }
+            }
+            if (!encontrado){
+                return entrada
+            }else{
+                println("Dame un ID valido, ID $entrada ya existe")
+            }
+        }
+    }
+}
+
+
+
 fun importarBD(rutaJSON: String, coleccion: MongoCollection<Document>) {
     println("Iniciando importación de datos desde JSON...")
 

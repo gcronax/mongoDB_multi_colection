@@ -54,12 +54,6 @@ fun mostrarCoches() {
     println();
     println("**** Listado de coches:")
     coleccionCoches.find().forEach { doc ->
-//        val id_coche = doc.getInteger("id_coche")
-//        val modelo = doc.getString("modelo")
-//        val marca = doc.getString("marca")
-//        val consumo = doc.get("consumo").toString().toDouble()
-//        val hp = doc.getInteger("hp")
-
         println(
             "[${doc.getInteger("id_coche")}] " +
                     "modelo: ${doc.getString("modelo")} " +
@@ -76,7 +70,7 @@ fun insertarCoche() {
     val coleccionCoches = coleccionCoches
 
     print("ID del coche: ")
-    val id_coche = isInt()
+    val id_coche = checkID(coleccionCoches,"id_coche")
     print("Nombre modelo: ")
     val modelo = isString()
     print("Nombre marca: ")
